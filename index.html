@@ -33,8 +33,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
     <script>
-        let web3, account, nftContract;
-        const nftContractAddress = '0x34E70d6082B268049aefB42ab4bfFE7bea93e969';
+        let web3;
+        let account;
+        let nftContract;
+        let isImageLoaded = false;
+        let currentAttributes = ["Territory A", "Trove 1", "Rare", "Surge X", "Shrine Alpha"];
+        let x = 0;
+        let y = 0;
+
+        const nftContractAddress = "0x34E70d6082B268049aefB42ab4bfFE7bea93e969";
         const nftAbi = [
             {
                 "inputs": [],
@@ -396,22 +403,19 @@
                 "type": "function"
             }
         ];
-        const fromChain = 'Shibarium';
+        const fromChain = "Shibarium";
         const chains = {
             Shibarium: {
                 chainId: 109,
-                chainName: 'Shibarium',
-                rpcUrl: 'https://rpc.shibariumchain.com'
+                chainName: "Shibarium",
+                rpcUrl: "https://rpc.shibariumchain.com"
             }
         };
         const dogMessages = {
-            connectSuccess: ['Woof! Wallet connected, pup!', 'Arf! You’re in, let’s play!'],
-            connectFail: ['Grr… Wallet connection failed, pup!', 'Woof! Something went wrong, try again!'],
-            networkFail: ['Woof! Network switch failed, pup!', 'Arf! Can’t switch, check your settings!']
+            connectSuccess: ["Woof! Wallet connected, pup!", "Arf! You’re in, let’s play!"],
+            connectFail: ["Grr… Wallet connection failed, pup!", "Woof! Something went wrong, try again!"],
+            networkFail: ["Woof! Network switch failed, pup!", "Arf! Can’t switch, check your settings!"]
         };
-        let isImageLoaded = false;
-        let currentAttributes = ["Territory A", "Trove 1", "Rare", "Surge X", "Shrine Alpha"];
-        let x = 0, y = 0;
 
         function getRandomMessage(type) {
             const messages = dogMessages[type];
@@ -420,38 +424,39 @@
 
         async function switchNetwork(chain) {
             const chainConfig = chains[chain];
-            const status = document.getElementById('networkStatus');
-            const dogMessage = document.getElementById('dogMessage');
+            const status = document.getElementById("networkStatus");
+            const dogMessage = document.getElementById("dogMessage");
+
             try {
                 await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
+                    method: "wallet_switchEthereumChain",
                     params: [{ chainId: `0x${chainConfig.chainId.toString(16)}` }]
                 });
             } catch (switchError) {
                 if (switchError.code === 4902) {
                     try {
                         await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
+                            method: "wallet_addEthereumChain",
                             params: [{
                                 chainId: `0x${chainConfig.chainId.toString(16)}`,
                                 chainName: chainConfig.chainName,
-                                rpcUrls: [chainConfig.rpcUrl, 'https://www.shibrpc.com'],
-                                nativeCurrency: { name: chainConfig.chainName, symbol: 'BONE', decimals: 18 },
-                                blockExplorerUrls: ['https://shibariumscan.io']
+                                rpcUrls: [chainConfig.rpcUrl, "https://www.shibrpc.com"],
+                                nativeCurrency: { name: chainConfig.chainName, symbol: "BONE", decimals: 18 },
+                                blockExplorerUrls: ["https://shibariumscan.io"]
                             }]
                         });
                     } catch (addError) {
-                        status.innerText = 'Failed to add Shibarium network: ' + addError.message;
-                        dogMessage.innerText = 'Woof! Couldn’t add Shibarium, pup! Check your MetaMask settings.';
+                        status.innerText = "Failed to add Shibarium network: " + addError.message;
+                        dogMessage.innerText = "Woof! Couldn’t add Shibarium, pup! Check your MetaMask settings.";
                         throw addError;
                     }
                 } else if (switchError.code === 4001) {
-                    status.innerText = 'User denied network switch to Shibarium.';
-                    dogMessage.innerText = 'Woof! You denied the network switch, pup! Please allow Shibarium.';
+                    status.innerText = "User denied network switch to Shibarium.";
+                    dogMessage.innerText = "Woof! You denied the network switch, pup! Please allow Shibarium.";
                     throw switchError;
                 } else {
-                    status.innerText = 'Failed to switch to Shibarium: ' + switchError.message;
-                    dogMessage.innerText = getRandomMessage('networkFail');
+                    status.innerText = "Failed to switch to Shibarium: " + switchError.message;
+                    dogMessage.innerText = getRandomMessage("networkFail");
                     throw switchError;
                 }
             }
@@ -466,30 +471,32 @@
         }
 
         async function connectWallet() {
-            const status = document.getElementById('networkStatus');
-            const dogMessage = document.getElementById('dogMessage');
+            const status = document.getElementById("networkStatus");
+            const dogMessage = document.getElementById("dogMessage");
+
             if (!window.ethereum) {
-                status.innerText = 'Please install MetaMask to connect your wallet. Download it from https://metamask.io/';
-                dogMessage.innerText = 'Woof! MetaMask not found, pup! Please install it from https://metamask.io/';
+                status.innerText = "Please install MetaMask to connect your wallet. Download it from https://metamask.io/";
+                dogMessage.innerText = "Woof! MetaMask not found, pup! Please install it from https://metamask.io/";
                 return;
             }
+
             try {
                 web3 = new Web3(window.ethereum);
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
                 account = accounts[0];
-                document.getElementById('connectWalletButton').innerText = `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`;
+                document.getElementById("connectWalletButton").innerText = `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`;
                 await switchNetwork(fromChain);
                 await initializeContracts();
                 await updateNFTInfo();
                 status.innerText = `Connected to ${fromChain}`;
-                dogMessage.innerText = getRandomMessage('connectSuccess');
+                dogMessage.innerText = getRandomMessage("connectSuccess");
             } catch (error) {
                 if (error.code === 4001) {
-                    status.innerText = 'User denied wallet connection. Please authorize in MetaMask.';
-                    dogMessage.innerText = 'Woof! You denied the connection, pup! Please allow access in MetaMask.';
+                    status.innerText = "User denied wallet connection. Please authorize in MetaMask.";
+                    dogMessage.innerText = "Woof! You denied the connection, pup! Please allow access in MetaMask.";
                 } else {
-                    status.innerText = 'Failed to connect wallet: ' + error.message;
-                    dogMessage.innerText = getRandomMessage('connectFail');
+                    status.innerText = "Failed to connect wallet: " + error.message;
+                    dogMessage.innerText = getRandomMessage("connectFail");
                 }
             }
         }
@@ -513,19 +520,21 @@
         function generateTokenURI(x, y, attributes) {
             const svg = generateSVG(x, y, attributes);
             const svgBase64 = btoa(svg);
+
             const img = new Image();
             img.src = `data:image/svg+xml;base64,${svgBase64}`;
             img.onload = () => {
                 isImageLoaded = true;
-                document.getElementById('mintButton').disabled = false;
-                document.getElementById('nftPreview').innerHTML = '';
-                document.getElementById('nftPreview').appendChild(img);
+                document.getElementById("mintButton").disabled = false;
+                document.getElementById("nftPreview").innerHTML = "";
+                document.getElementById("nftPreview").appendChild(img);
             };
             img.onerror = () => {
                 isImageLoaded = false;
-                document.getElementById('mintButton').disabled = true;
-                document.getElementById('status').innerText = 'Failed to load NFT image.';
+                document.getElementById("mintButton").disabled = true;
+                document.getElementById("status").innerText = "Failed to load NFT image.";
             };
+
             const metadata = {
                 name: `Shibatopia (${x}, ${y})`,
                 description: `A unique Shibatopia NFT at coordinates (${x}, ${y}) with custom attributes.`,
@@ -543,7 +552,7 @@
         }
 
         function updateAttributesDisplay() {
-            document.getElementById('attributesDisplay').innerHTML = `
+            document.getElementById("attributesDisplay").innerHTML = `
                 <p>SHIB Territory: ${currentAttributes[0]}</p>
                 <p>Shiba Trove: ${currentAttributes[1]}</p>
                 <p>Moon Rarity: ${currentAttributes[2]}</p>
@@ -551,29 +560,30 @@
                 <p>Shiba Shrine: ${currentAttributes[4]}</p>
             `;
             isImageLoaded = false;
-            document.getElementById('mintButton').disabled = true;
+            document.getElementById("mintButton").disabled = true;
             generateTokenURI(x, y, currentAttributes);
         }
 
-        document.getElementById('connectWalletButton').addEventListener('click', connectWallet);
+        document.getElementById("connectWalletButton").addEventListener("click", connectWallet);
 
-        document.getElementById('randomAttributesButton').addEventListener('click', () => {
+        document.getElementById("randomAttributesButton").addEventListener("click", () => {
             currentAttributes = getRandomAttribute();
             updateAttributesDisplay();
         });
 
-        document.getElementById('mintButton').addEventListener('click', async () => {
+        document.getElementById("mintButton").addEventListener("click", async () => {
             if (!isImageLoaded) {
-                document.getElementById('status').innerText = 'Please wait for the image to load before minting.';
+                document.getElementById("status").innerText = "Please wait for the image to load before minting.";
                 return;
             }
+
             try {
                 const tokenURI = generateTokenURI(x, y, currentAttributes);
-                const tx = await nftContract.mintNFT(account, tokenURI, { value: web3.utils.toWei('0.01', 'ether') });
+                const tx = await nftContract.mintNFT(account, tokenURI, { value: web3.utils.toWei("0.01", "ether") });
                 await tx.wait();
-                document.getElementById('status').innerText = 'NFT minted successfully!';
+                document.getElementById("status").innerText = "NFT minted successfully!";
             } catch (error) {
-                document.getElementById('status').innerText = 'Failed to mint NFT: ' + error.message;
+                document.getElementById("status").innerText = "Failed to mint NFT: " + error.message;
             }
         });
 
