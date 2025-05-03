@@ -458,15 +458,18 @@
                 return;
             }
 
-            const coordX = document.getElementById('coordX').value;
-            const coordY = document.getElementById('coordY').value;
+            const coordXInput = document.getElementById('coordX')?.value;
+            const coordYInput = document.getElementById('coordY')?.value;
             const shibTerritory = document.getElementById('shibTerritory')?.value;
             const shibaTrove = document.getElementById('shibaTrove')?.value;
             const moonRarity = document.getElementById('moonRarity')?.value;
             const shibaSurge = document.getElementById('shibaSurge')?.value;
             const shibaShrine = document.getElementById('shibaShrine')?.value;
 
-            if (!coordX || !coordY || coordX < 0 || coordX > 999 || coordY < 0 || coordY > 999) {
+            const coordX = parseInt(coordXInput, 10);
+            const coordY = parseInt(coordYInput, 10);
+
+            if (isNaN(coordX) || isNaN(coordY) || coordX < 0 || coordX > 999 || coordY < 0 || coordY > 999) {
                 alert('Please enter valid coordinates (0-999).');
                 return;
             }
