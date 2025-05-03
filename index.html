@@ -460,12 +460,6 @@
 
             const coordXInput = document.getElementById('coordX')?.value;
             const coordYInput = document.getElementById('coordY')?.value;
-            const shibTerritory = document.getElementById('shibTerritory')?.value;
-            const shibaTrove = document.getElementById('shibaTrove')?.value;
-            const moonRarity = document.getElementById('moonRarity')?.value;
-            const shibaSurge = document.getElementById('shibaSurge')?.value;
-            const shibaShrine = document.getElementById('shibaShrine')?.value;
-
             const coordX = parseInt(coordXInput, 10);
             const coordY = parseInt(coordYInput, 10);
 
@@ -473,6 +467,12 @@
                 alert('Please enter valid coordinates (0-999).');
                 return;
             }
+
+            const shibTerritory = document.getElementById('shibTerritory')?.value;
+            const shibaTrove = document.getElementById('shibaTrove')?.value;
+            const moonRarity = document.getElementById('moonRarity')?.value;
+            const shibaSurge = document.getElementById('shibaSurge')?.value;
+            const shibaShrine = document.getElementById('shibaShrine')?.value;
 
             if (!shibTerritory || !shibaTrove || !moonRarity || !shibaSurge || !shibaShrine) {
                 alert('Please select all attributes before minting.');
