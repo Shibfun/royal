@@ -6,13 +6,16 @@
     <title>Royal Woof - NFT Minting</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        ::root {
+        :root {
             --primary-color: #ff9100;
             --secondary-color: #ff6f61;
             --gradient-bg: linear-gradient(180deg, #1e1e2f 0%, #2a2a3d 100%);
             --card-bg: #2c2f48;
             --input-bg: #373b5c;
             --text-color: #ffffff;
+            --button-bg: #ff6f61; /* 优化：按钮背景改为更鲜艳的珊瑚色 */
+            --button-hover: #e55a50; /* 优化：悬停时稍暗 */
+            --button-text: #1e1e2f; /* 优化：按钮文本为深色，增加对比 */
             --border-radius: 15px;
         }
         * {
@@ -49,18 +52,19 @@
         }
         .connect-section button {
             padding: 12px;
-            background: var(--primary-color);
-            color: var(--text-color);
-            border: none;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 2px solid var(--primary-color); /* 优化：添加橙色边框 */
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: bold;
             width: 100%;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
             margin-bottom: 10px;
         }
         .connect-section button:hover {
-            background: #e68a00;
+            background: var(--button-hover);
+            transform: scale(1.02); /* 优化：悬停时轻微放大 */
         }
         .input-box {
             background: var(--input-bg);
@@ -73,33 +77,27 @@
             font-size: 0.9em;
             margin-bottom: 5px;
         }
-        input {
-            width: 100%;
-            padding: 10px;
-            background: var(--input-bg);
-            border: none;
-            border-radius: 10px;
-            color: var(--text-color);
-            font-size: 1em;
-        }
         .action-button {
             padding: 15px;
-            background: var(--primary-color);
-            color: var(--text-color);
-            border: none;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 2px solid var(--primary-color);
             border-radius: var(--border-radius);
             cursor: pointer;
             font-weight: bold;
             width: 100%;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
             margin-bottom: 10px;
         }
         .action-button:disabled {
             background: #4a4f7a;
+            color: #888;
+            border: none;
             cursor: not-allowed;
         }
         .action-button:hover:not(:disabled) {
-            background: #e68a00;
+            background: var(--button-hover);
+            transform: scale(1.02);
         }
         .status {
             margin-top: 10px;
@@ -131,15 +129,16 @@
         }
         .view-button {
             padding: 5px 10px;
-            background: #4a4f7a;
-            border: none;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 1px solid var(--primary-color);
             border-radius: 5px;
             cursor: pointer;
-            color: var(--text-color);
             font-size: 0.8em;
+            transition: background 0.2s;
         }
         .view-button:hover {
-            background: #5a5f8a;
+            background: var(--button-hover);
         }
         .dog-section {
             text-align: center;
@@ -162,6 +161,7 @@
         .nft-preview img {
             max-width: 100%;
             border-radius: 10px;
+            border: 2px solid var(--primary-color); /* 优化：图片加边框 */
         }
         @media (max-width: 480px) {
             body { padding: 10px; }
@@ -498,7 +498,9 @@
             userDenied: ["Woof! You canceled the transaction, pup!", "Arf! Transaction denied, try again when ready!", "Bark! You said no, let's try again!"],
             networkFail: ["Woof! Failed to switch to Shibarium, pup!", "Arf! Network switch failed, try again!", "Bark! Can't connect to Shibarium, check your settings!"],
             insufficientBalance: ["Woof! Not enough BONE to mint, pup!", "Arf! Need more BONE to proceed!", "Bark! Low BONE balance, top up!"],
-            maxSupplyReached: ["Woof! All NFTs minted, collection complete, pup!", "Arf! Max supply reached, no more NFTs!", "Bark! Collection sold out!"]
+            maxSupplyReached: ["Woof! All NFTs minted, collection complete, pup!", "Arf! Max supply reached, no more NFTs!", "Bark! Collection sold out!"],
+            noNFTs: ["Woof! No NFTs found in your wallet, pup!", "Arf! Mint some NFTs to see them here!", "Bark! Your collection is empty!"],
+            metadataError: ["Woof! Couldn't load NFT image, pup!", "Arf! Metadata issue, check tokenURI!", "Bark! NFT preview failed!"]
         };
 
         function getRandomMessage(type) {
@@ -604,28 +606,37 @@
 
         async function updateOwnedNFTs() {
             if (!web3 || !account) return;
+            const list = document.getElementById('ownedNFTsList');
+            list.innerHTML = '';
             try {
-                const list = document.getElementById('ownedNFTsList');
-                list.innerHTML = '';
-                const balance = await nftContract.methods.balanceOf(account).call();
-                if (balance == 0) {
-                    list.innerHTML = '<li>No NFTs owned yet.</li>';
-                    return;
-                }
+                const totalSupply = await nftContract.methods.totalSupply().call();
                 const nfts = [];
-                for (let i = 0; i < balance; i++) {
-                    const tokenId = await nftContract.methods.tokenOfOwnerByIndex(account, i).call();
-                    const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
-                    nfts.push({ tokenId, tokenURI });
+                for (let tokenId = 1; tokenId <= totalSupply; tokenId++) {
+                    try {
+                        const owner = await nftContract.methods.ownerOf(tokenId).call();
+                        if (owner.toLowerCase() === account.toLowerCase()) {
+                            const tokenURI = await nftContract.methods.tokenURI(tokenId).call();
+                            nfts.push({ tokenId, tokenURI });
+                        }
+                    } catch (e) {
+                        console.warn(`Token ID ${tokenId} does not exist or error:`, e.message);
+                    }
+                }
+                if (nfts.length === 0) {
+                    list.innerHTML = '<li>No NFTs owned yet.</li>';
+                    document.getElementById('dogMessage').innerText = getRandomMessage('noNFTs');
+                    return;
                 }
                 for (const nft of nfts) {
                     let imageUrl = '';
                     try {
                         const response = await fetch(nft.tokenURI);
+                        if (!response.ok) throw new Error('Invalid tokenURI');
                         const json = await response.json();
-                        imageUrl = json.image;
+                        imageUrl = json.image || '';
                     } catch (e) {
-                        console.error("Error fetching tokenURI:", e.message);
+                        console.error(`Error fetching tokenURI for token ${nft.tokenId}:`, e.message);
+                        document.getElementById('dogMessage').innerText = getRandomMessage('metadataError');
                     }
                     const li = document.createElement('li');
                     li.innerText = `NFT ID: ${nft.tokenId}`;
@@ -635,12 +646,16 @@
                     viewButton.onclick = () => {
                         document.getElementById('nftImage').src = imageUrl;
                         document.getElementById('nftPreview').style.display = imageUrl ? 'block' : 'none';
+                        if (!imageUrl) {
+                            document.getElementById('dogMessage').innerText = getRandomMessage('metadataError');
+                        }
                     };
                     li.appendChild(viewButton);
                     list.appendChild(li);
                 }
             } catch (error) {
-                document.getElementById('ownedNFTsList').innerHTML = '<li>Error loading NFTs.</li>';
+                list.innerHTML = '<li>Error loading NFTs.</li>';
+                document.getElementById('dogMessage').innerText = getRandomMessage('noNFTs');
                 console.error("Owned NFTs error:", error.message);
             }
         }
