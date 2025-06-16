@@ -123,13 +123,13 @@
             color: var(--primary-color);
             text-align: center;
         }
-        .nft-info {
+        .nft-info, .token-balances {
             background: var(--input-bg);
             padding: 15px;
             border-radius: var(--border-radius);
             margin-bottom: 15px;
         }
-        .nft-info p {
+        .nft-info p, .token-balances p {
             font-size: 0.9em;
             margin-bottom: 5px;
         }
@@ -169,6 +169,13 @@
             <p id="nftInfoOwner">Owner: Loading...</p>
             <p id="nftInfoTotalSupply">Total Minted: Loading...</p>
         </div>
+        <div class="token-balances" id="tokenBalances">
+            <p id="woofBalance">WOOF Balance: Loading...</p>
+            <p id="damnBalance">DAMN Balance: Loading...</p>
+            <p id="feedBalance">FEED Balance: Loading...</p>
+            <p id="wowBalance">WOW Balance: Loading...</p>
+            <p id="chikaBalance">CHIKA Balance: Loading...</p>
+        </div>
         <div class="input-box">
             <label>Batch Mint NFTs</label>
             <select id="tokenSelect">
@@ -180,7 +187,6 @@
             </select>
             <input type="number" id="mintAmount" placeholder="Enter number of NFTs to mint" min="1" value="1">
             <p id="totalPrice">Total Price: Select token and amount</p>
-            <button class="action-button" id="approveButton" onclick="approveToken()">Approve Token</button>
             <button class="action-button" id="mintButton" onclick="batchMintNFT()">Batch Mint NFTs</button>
         </div>
         <div class="dog-section">
@@ -593,12 +599,13 @@
 
         let web3, account, nftContract;
         const fromChain = 'Shibarium';
+        const MAX_APPROVAL = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
         const dogMessages = {
             connectSuccess: ["Woof! Wallet connected, ready to batch mint NFTs, pup!", "Arf! You're in, let's mint some NFTs!", "Bark! Wallet's ready, time to mint!"],
             connectFail: ["Woof! Couldn't connect wallet, try again, pup!", "Arf! Wallet connection failed, give it another go!", "Bark! Something went wrong, check your wallet!"],
             approveStart: ["Woof! Approving token, hold tight, pup!", "Arf! Authorizing token now!", "Bark! Approving in progress!"],
-            approveSuccess: ["Woof! Token approved, ready to mint, pup!", "Arf! Token authorized, go mint!", "Bark! Approval done, let's mint!"],
+            approveSuccess: ["Woof! Token approved, proceeding to mint, pup!", "Arf! Token authorized, minting now!", "Bark! Approval done, let's mint!"],
             approveFail: ["Woof! Approval failed, try again, pup!", "Arf! Couldn't approve token, retry!", "Bark! Approval hit a snag, check it!"],
             mintStart: ["Woof! Batch minting your NFTs, hold tight, pup!", "Arf! Crafting your NFTs now!", "Bark! Batch minting in progress!"],
             mintSuccess: ["Woof! NFTs minted, you're a collector, pup!", "Arf! Your NFTs are ready, check them out!", "Bark! Success! NFTs created!"],
@@ -606,7 +613,6 @@
             userDenied: ["Woof! You canceled the transaction, pup!", "Arf! Transaction denied, try again when ready!", "Bark! You said no, let's try again!"],
             networkFail: ["Woof! Failed to switch to Shibarium, pup!", "Arf! Network switch failed, try again!", "Bark! Can't connect to Shibarium, check your settings!"],
             insufficientBalance: ["Woof! Not enough tokens to mint, pup!", "Arf! Need more tokens to proceed!", "Bark! Low token balance, top up!"],
-            insufficientAllowance: ["Woof! Token not approved, click Approve first, pup!", "Arf! Need to approve token first!", "Bark! Approve token before minting!"],
             maxSupplyReached: ["Woof! All NFTs minted, collection complete, pup!", "Arf! Max supply reached, no more NFTs!", "Bark! Collection sold out!"],
             invalidAmount: ["Woof! Invalid mint amount, enter a number greater than 0, pup!", "Arf! Check your mint amount!", "Bark! Amount must be valid!"]
         };
@@ -635,6 +641,7 @@
                 await switchNetwork(fromChain);
                 await initializeContract();
                 await updateNFTInfo();
+                await updateTokenBalances();
                 updateTotalPrice();
 
                 status.innerText = `Connected to ${fromChain}`;
@@ -687,6 +694,7 @@
         async function initializeContract() {
             nftContract = new web3.eth.Contract(contractAbi, contractAddress);
             document.getElementById('nftInfo').style.display = 'block';
+            document.getElementById('tokenBalances').style.display = 'block';
         }
 
         async function updateNFTInfo() {
@@ -706,6 +714,28 @@
                 document.getElementById('nftInfo').style.display = 'none';
                 document.getElementById('dogMessage').innerText = 'Woof! Error loading contract info, pup!';
                 console.error("NFT info error:", error.message);
+            }
+        }
+
+        async function updateTokenBalances() {
+            if (!web3 || !account) return;
+            try {
+                const tokens = [
+                    { address: '0xD0daa7B6ff1B40d3cc6F0B2Cf7E85cB993D1c834', id: 'woofBalance', name: 'WOOF' },
+                    { address: '0xeCe898EdCc0AF91430603175F945D8de75291c70', id: 'damnBalance', name: 'DAMN' },
+                    { address: '0xe9Cb2D7ADC24Fc59FE00D6C0A0669BDF16805Fe0', id: 'feedBalance', name: 'FEED' },
+                    { address: '0x8f4b11d923BbAA6206f3Dd3ff84e8e31bafB49b7', id: 'wowBalance', name: 'WOW' },
+                    { address: '0x61CFA29261d8151D39244b8FfCf8DFd2f9DF3839', id: 'chikaBalance', name: 'CHIKA' }
+                ];
+                for (const token of tokens) {
+                    const tokenContract = new web3.eth.Contract(tokenAbi, token.address);
+                    const balance = await tokenContract.methods.balanceOf(account).call();
+                    document.getElementById(token.id).innerText = `${token.name} Balance: ${web3.utils.fromWei(balance, 'ether')}`;
+                }
+            } catch (error) {
+                document.getElementById('tokenBalances').style.display = 'none';
+                document.getElementById('dogMessage').innerText = 'Woof! Error loading token balances, pup!';
+                console.error("Token balances error:", error.message);
             }
         }
 
@@ -740,57 +770,6 @@
             throw new Error(`Transaction ${txHash} not confirmed after ${maxAttempts} attempts`);
         }
 
-        async function approveToken() {
-            const status = document.getElementById('networkStatus');
-            const dogMessage = document.getElementById('dogMessage');
-            const approveButton = document.getElementById('approveButton');
-            const tokenAddress = document.getElementById('tokenSelect').value;
-            const amount = parseInt(document.getElementById('mintAmount').value) || 0;
-
-            if (!web3 || !account) {
-                status.innerText = "Please connect wallet first.";
-                dogMessage.innerText = getRandomMessage('connectFail');
-                return;
-            }
-
-            if (amount <= 0) {
-                status.innerText = "Invalid mint amount.";
-                dogMessage.innerText = getRandomMessage('invalidAmount');
-                return;
-            }
-
-            try {
-                approveButton.disabled = true;
-                approveButton.innerText = "Approving...";
-                dogMessage.innerText = getRandomMessage('approveStart');
-
-                const tokenContract = new web3.eth.Contract(tokenAbi, tokenAddress);
-                const price = await nftContract.methods[`${tokenInfo[tokenAddress].name}_PRICE`]().call();
-                const totalPrice = (BigInt(price) * BigInt(amount)).toString();
-
-                const tx = await tokenContract.methods.approve(contractAddress, totalPrice).send({
-                    from: account,
-                    gas: web3.utils.toHex(100000)
-                });
-
-                await waitForTransaction(tx.transactionHash);
-                status.innerText = "Token approved successfully!";
-                dogMessage.innerText = getRandomMessage('approveSuccess');
-            } catch (error) {
-                if (error.code === 4001) {
-                    status.innerText = "Transaction canceled by user.";
-                    dogMessage.innerText = getRandomMessage('userDenied');
-                } else {
-                    status.innerText = "Approval failed.";
-                    dogMessage.innerText = getRandomMessage('approveFail');
-                    console.error("Approval error:", error.message);
-                }
-            } finally {
-                approveButton.innerText = "Approve Token";
-                approveButton.disabled = false;
-            }
-        }
-
         async function batchMintNFT() {
             const status = document.getElementById('networkStatus');
             const mintButton = document.getElementById('mintButton');
@@ -812,13 +791,14 @@
 
             try {
                 mintButton.disabled = true;
-                mintButton.innerText = "Minting...";
-                dogMessage.innerText = getRandomMessage('mintStart');
+                mintButton.innerText = "Processing...";
+                dogMessage.innerText = getRandomMessage('approveStart');
 
                 const tokenContract = new web3.eth.Contract(tokenAbi, tokenAddress);
                 const price = await nftContract.methods[`${tokenInfo[tokenAddress].name}_PRICE`]().call();
                 const totalSupply = await nftContract.methods.totalSupply().call();
                 const maxSupply = await nftContract.methods.MAX_SUPPLY().call();
+                const totalPrice = (BigInt(price) * BigInt(amount)).toString();
 
                 if (parseInt(totalSupply) + amount > maxSupply) {
                     status.innerText = "Max supply reached.";
@@ -829,7 +809,6 @@
                 }
 
                 const balance = await tokenContract.methods.balanceOf(account).call();
-                const totalPrice = (BigInt(price) * BigInt(amount)).toString();
                 if (web3.utils.toBN(balance).lt(web3.utils.toBN(totalPrice))) {
                     status.innerText = `Insufficient ${tokenInfo[tokenAddress].name} balance.`;
                     dogMessage.innerText = getRandomMessage('insufficientBalance');
@@ -840,22 +819,28 @@
 
                 const allowance = await tokenContract.methods.allowance(account, contractAddress).call();
                 if (web3.utils.toBN(allowance).lt(web3.utils.toBN(totalPrice))) {
-                    status.innerText = `Please approve ${tokenInfo[tokenAddress].name} first.`;
-                    dogMessage.innerText = getRandomMessage('insufficientAllowance');
-                    mintButton.innerText = "Batch Mint NFTs";
-                    mintButton.disabled = false;
-                    return;
+                    const approveTx = await tokenContract.methods.approve(contractAddress, MAX_APPROVAL).send({
+                        from: account,
+                        gas: web3.utils.toHex(100000)
+                    });
+                    await waitForTransaction(approveTx.transactionHash);
+                    status.innerText = "Token approved successfully!";
+                    dogMessage.innerText = getRandomMessage('approveSuccess');
                 }
 
-                const tx = await nftContract.methods.batchMintNFT(tokenAddress, amount).send({
+                mintButton.innerText = "Minting...";
+                dogMessage.innerText = getRandomMessage('mintStart');
+
+                const mintTx = await nftContract.methods.batchMintNFT(tokenAddress, amount).send({
                     from: account,
                     gas: web3.utils.toHex(200000 + amount * 100000)
                 });
 
-                await waitForTransaction(tx.transactionHash);
+                await waitForTransaction(mintTx.transactionHash);
                 status.innerText = `Successfully minted ${amount} NFTs!`;
                 dogMessage.innerText = getRandomMessage('mintSuccess');
                 await updateNFTInfo();
+                await updateTokenBalances();
                 updateTotalPrice();
             } catch (error) {
                 if (error.code === 4001) {
