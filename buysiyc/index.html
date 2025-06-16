@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy SIYC - Batch NFT Minting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff9100;
+            --secondary-color: #ff6f61;
+            --gradient-bg: linear-gradient(180deg, #1e1e2f 0%, #2a2a3d 100%);
+            --card-bg: #2c2f48;
+            --input-bg: #373b5c;
+            --text-color: #ffffff;
+            --button-bg: #ff6f61;
+            --button-hover: #e55a50;
+            --button-text: #1e1e2f;
+            --border-radius: 15px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-color);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border-radius: var(--border-radius);
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(90deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            padding: 12px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .connect-section button {
+            padding: 12px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s, transform 0.1s;
+            margin-bottom: 10px;
+        }
+        .connect-section button:hover {
+            background: var(--button-hover);
+            transform: scale(1.02);
+        }
+        .input-box {
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        .input-box label {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .input-box select, .input-box input {
+            width: 100%;
+            padding: 10px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .input-box input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .input-box input::-webkit-outer-spin-button,
+        .input-box input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .action-button {
+            padding: 15px;
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background 0.2s, transform 0.1s;
+            margin-bottom: 10px;
+        }
+        .action-button:disabled {
+            background: #4a4f7a;
+            color: #888;
+            border: none;
+            cursor: not-allowed;
+        }
+        .action-button:hover:not(:disabled) {
+            background: var(--button-hover);
+            transform: scale(1.02);
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: var(--primary-color);
+            text-align: center;
+        }
+        .nft-info {
+            background: var(--input-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+        .nft-info p {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .dog-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .dog-section img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .dog-message {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            font-style: italic;
+        }
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            .header { font-size: 1.1em; }
+            .dog-section img { width: 50px; height: 50px; }
+            .dog-message { font-size: 0.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Buy SIYC - Batch NFT Minting</div>
+        <div class="connect-section">
+            <button id="connectWalletButton">Connect Wallet</button>
+            <div id="networkStatus" class="status">Click to connect...</div>
+        </div>
+        <div class="nft-info" id="nftInfo">
+            <p id="nftInfoName">Name: Loading...</p>
+            <p id="nftInfoSymbol">Symbol: Loading...</p>
+            <p id="nftInfoOwner">Owner: Loading...</p>
+            <p id="nftInfoTotalSupply">Total Minted: Loading...</p>
+        </div>
+        <div class="input-box">
+            <label>Batch Mint NFTs</label>
+            <select id="tokenSelect">
+                <option value="0xD0daa7B6ff1B40d3cc6F0B2Cf7E85cB993D1c834">WOOF (2597 per NFT)</option>
+                <option value="0xeCe898EdCc0AF91430603175F945D8de75291c70">DAMN (542722 per NFT)</option>
+                <option value="0xe9Cb2D7ADC24Fc59FE00D6C0A0669BDF16805Fe0">FEED (4871241247 per NFT)</option>
+                <option value="0x8f4b11d923BbAA6206f3Dd3ff84e8e31bafB49b7">WOW (6157175 per NFT)</option>
+                <option value="0x61CFA29261d8151D39244b8FfCf8DFd2f9DF3839">CHIKA (78868585456 per NFT)</option>
+            </select>
+            <input type="number" id="mintAmount" placeholder="Enter number of NFTs to mint" min="1" value="1">
+            <p id="totalPrice">Total Price: Select token and amount</p>
+            <button class="action-button" id="approveButton" onclick="approveToken()">Approve Token</button>
+            <button class="action-button" id="mintButton" onclick="batchMintNFT()">Batch Mint NFTs</button>
+        </div>
+        <div class="dog-section">
+            <img src="https://raw.githubusercontent.com/Shibfun/ChainBridge/refs/heads/main/images/shiba.gif" alt="Shiba Dog">
+            <div class="dog-message" id="dogMessage">Woof! Connect your wallet to start batch minting NFTs, pup!</div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script>
+        const contractAddress = '0x09E11d984eA2ae1AA262EB8eFe7f85AdF8B882d0';
+        const contractAbi = [
+            {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "owner", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "approved", "type": "address"},
+                    {"indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "Approval",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "owner", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "operator", "type": "address"},
+                    {"indexed": false, "internalType": "bool", "name": "approved", "type": "bool"}
+                ],
+                "name": "ApprovalForAll",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "previousOwner", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "newOwner", "type": "address"}
+                ],
+                "name": "OwnershipTransferred",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {"indexed": true, "internalType": "address", "name": "from", "type": "address"},
+                    {"indexed": true, "internalType": "address", "name": "to", "type": "address"},
+                    {"indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "Transfer",
+                "type": "event"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "to", "type": "address"},
+                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "approve",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "owner", "type": "address"}
+                ],
+                "name": "balanceOf",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "tokenAddress", "type": "address"},
+                    {"internalType": "uint256", "name": "amount", "type": "uint256"}
+                ],
+                "name": "batchMintNFT",
+                "outputs": [
+                    {"internalType": "uint256[]", "name": "", "type": "uint256[]"}
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "getApproved",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "owner", "type": "address"},
+                    {"internalType": "address", "name": "operator", "type": "address"}
+                ],
+                "name": "isApprovedForAll",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "name",
+                "outputs": [
+                    {"internalType": "string", "name": "", "type": "string"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "ownerOf",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "renounceOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "from", "type": "address"},
+                    {"internalType": "address", "name": "to", "type": "address"},
+                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "safeTransferFrom",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "from", "type": "address"},
+                    {"internalType": "address", "name": "to", "type": "address"},
+                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"},
+                    {"internalType": "bytes", "name": "data", "type": "bytes"}
+                ],
+                "name": "safeTransferFrom",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "string", "name": "_newBaseURI", "type": "string"}
+                ],
+                "name": "setBaseURI",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "operator", "type": "address"},
+                    {"internalType": "bool", "name": "approved", "type": "bool"}
+                ],
+                "name": "setApprovalForAll",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "bytes4", "name": "interfaceId", "type": "bytes4"}
+                ],
+                "name": "supportsInterface",
+                "outputs": [
+                    {"internalType": "bool", "name": "", "type": "bool"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "symbol",
+                "outputs": [
+                    {"internalType": "string", "name": "", "type": "string"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "tokenURI",
+                "outputs": [
+                    {"internalType": "string", "name": "", "type": "string"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "totalSupply",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "from", "type": "address"},
+                    {"internalType": "address", "name": "to", "type": "address"},
+                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
+                ],
+                "name": "transferFrom",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "newOwner", "type": "address"}
+                ],
+                "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "address", "name": "tokenAddress", "type": "address"}
+                ],
+                "name": "withdrawERC20",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "CHIKA_PRICE",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "CHIKA_TOKEN",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "DAMN_PRICE",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "DAMN_TOKEN",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "FEED_PRICE",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "FEED_TOKEN",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "MAX_SUPPLY",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "WOW_PRICE",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "WOW_TOKEN",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "WOOF_PRICE",
+                "outputs": [
+                    {"internalType": "uint256", "name": "", "type": "uint256"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "WOOF_TOKEN",
+                "outputs": [
+                    {"internalType": "address", "name": "", "type": "address"}
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        const tokenAbi = [
+            {
+                "constant": false,
+                "inputs": [
+                    {"name": "spender", "type": "address"},
+                    {"name": "value", "type": "uint256"}
+                ],
+                "name": "approve",
+                "outputs": [{"name": "", "type": "bool"}],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {"name": "account", "type": "address"}
+                ],
+                "name": "balanceOf",
+                "outputs": [{"name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
+                "inputs": [
+                    {"name": "owner", "type": "address"},
+                    {"name": "spender", "type": "address"}
+                ],
+                "name": "allowance",
+                "outputs": [{"name": "", "type": "uint256"}],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];
+
+        const chains = {
+            Shibarium: {
+                chainId: 109,
+                chainName: 'Shibarium',
+                rpcUrl: 'https://rpc.shibariumchain.com'
+            }
+        };
+
+        const tokenInfo = {
+            "0xD0daa7B6ff1B40d3cc6F0B2Cf7E85cB993D1c834": { name: "WOOF", price: "2597" },
+            "0xeCe898EdCc0AF91430603175F945D8de75291c70": { name: "DAMN", price: "542722" },
+            "0xe9Cb2D7ADC24Fc59FE00D6C0A0669BDF16805Fe0": { name: "FEED", price: "4871241247" },
+            "0x8f4b11d923BbAA6206f3Dd3ff84e8e31bafB49b7": { name: "WOW", price: "6157175" },
+            "0x61CFA29261d8151D39244b8FfCf8DFd2f9DF3839": { name: "CHIKA", price: "78868585456" }
+        };
+
+        let web3, account, nftContract;
+        const fromChain = 'Shibarium';
+
+        const dogMessages = {
+            connectSuccess: ["Woof! Wallet connected, ready to batch mint NFTs, pup!", "Arf! You're in, let's mint some NFTs!", "Bark! Wallet's ready, time to mint!"],
+            connectFail: ["Woof! Couldn't connect wallet, try again, pup!", "Arf! Wallet connection failed, give it another go!", "Bark! Something went wrong, check your wallet!"],
+            approveStart: ["Woof! Approving token, hold tight, pup!", "Arf! Authorizing token now!", "Bark! Approving in progress!"],
+            approveSuccess: ["Woof! Token approved, ready to mint, pup!", "Arf! Token authorized, go mint!", "Bark! Approval done, let's mint!"],
+            approveFail: ["Woof! Approval failed, try again, pup!", "Arf! Couldn't approve token, retry!", "Bark! Approval hit a snag, check it!"],
+            mintStart: ["Woof! Batch minting your NFTs, hold tight, pup!", "Arf! Crafting your NFTs now!", "Bark! Batch minting in progress!"],
+            mintSuccess: ["Woof! NFTs minted, you're a collector, pup!", "Arf! Your NFTs are ready, check them out!", "Bark! Success! NFTs created!"],
+            mintFail: ["Woof! Batch minting failed, check your tokens, pup!", "Arf! Something went wrong, try again!", "Bark! Minting hit a snag, retry!"],
+            userDenied: ["Woof! You canceled the transaction, pup!", "Arf! Transaction denied, try again when ready!", "Bark! You said no, let's try again!"],
+            networkFail: ["Woof! Failed to switch to Shibarium, pup!", "Arf! Network switch failed, try again!", "Bark! Can't connect to Shibarium, check your settings!"],
+            insufficientBalance: ["Woof! Not enough tokens to mint, pup!", "Arf! Need more tokens to proceed!", "Bark! Low token balance, top up!"],
+            insufficientAllowance: ["Woof! Token not approved, click Approve first, pup!", "Arf! Need to approve token first!", "Bark! Approve token before minting!"],
+            maxSupplyReached: ["Woof! All NFTs minted, collection complete, pup!", "Arf! Max supply reached, no more NFTs!", "Bark! Collection sold out!"],
+            invalidAmount: ["Woof! Invalid mint amount, enter a number greater than 0, pup!", "Arf! Check your mint amount!", "Bark! Amount must be valid!"]
+        };
+
+        function getRandomMessage(type) {
+            const messages = dogMessages[type];
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        async function initializeWeb3() {
+            const status = document.getElementById('networkStatus');
+            const dogMessage = document.getElementById('dogMessage');
+
+            if (!window.ethereum) {
+                status.innerText = 'Please install MetaMask';
+                dogMessage.innerText = 'Woof! MetaMask not found, pup!';
+                return;
+            }
+
+            try {
+                web3 = new Web3(window.ethereum);
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                account = accounts[0];
+                document.getElementById('connectWalletButton').innerText = `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`;
+
+                await switchNetwork(fromChain);
+                await initializeContract();
+                await updateNFTInfo();
+                updateTotalPrice();
+
+                status.innerText = `Connected to ${fromChain}`;
+                dogMessage.innerText = getRandomMessage('connectSuccess');
+            } catch (error) {
+                status.innerText = 'Failed to connect wallet';
+                dogMessage.innerText = getRandomMessage('connectFail');
+                console.error("Wallet connection error:", error.message);
+            }
+        }
+
+        async function switchNetwork(chain) {
+            const chainConfig = chains[chain];
+            const status = document.getElementById('networkStatus');
+            const dogMessage = document.getElementById('dogMessage');
+
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: `0x${chainConfig.chainId.toString(16)}` }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: `0x${chainConfig.chainId.toString(16)}`,
+                                chainName: chainConfig.chainName,
+                                rpcUrls: [chainConfig.rpcUrl],
+                                nativeCurrency: { name: chainConfig.chainName, symbol: 'BONE', decimals: 18 },
+                                blockExplorerUrls: ['https://shibariumscan.io']
+                            }]
+                        });
+                    } catch (addError) {
+                        status.innerText = 'Failed to add Shibarium network';
+                        dogMessage.innerText = getRandomMessage('networkFail');
+                        console.error("Network add error:", addError.message);
+                        throw addError;
+                    }
+                } else {
+                    status.innerText = 'Failed to switch to Shibarium';
+                    dogMessage.innerText = getRandomMessage('networkFail');
+                    console.error("Network switch error:", switchError.message);
+                    throw switchError;
+                }
+            }
+        }
+
+        async function initializeContract() {
+            nftContract = new web3.eth.Contract(contractAbi, contractAddress);
+            document.getElementById('nftInfo').style.display = 'block';
+        }
+
+        async function updateNFTInfo() {
+            try {
+                const [name, symbol, owner, totalSupply, maxSupply] = await Promise.all([
+                    nftContract.methods.name().call(),
+                    nftContract.methods.symbol().call(),
+                    nftContract.methods.owner().call(),
+                    nftContract.methods.totalSupply().call(),
+                    nftContract.methods.MAX_SUPPLY().call()
+                ]);
+                document.getElementById('nftInfoName').innerText = `Name: ${name}`;
+                document.getElementById('nftInfoSymbol').innerText = `Symbol: ${symbol}`;
+                document.getElementById('nftInfoOwner').innerText = `Owner: ${owner}`;
+                document.getElementById('nftInfoTotalSupply').innerText = `Total Minted: ${totalSupply}/${maxSupply}`;
+            } catch (error) {
+                document.getElementById('nftInfo').style.display = 'none';
+                document.getElementById('dogMessage').innerText = 'Woof! Error loading contract info, pup!';
+                console.error("NFT info error:", error.message);
+            }
+        }
+
+        function updateTotalPrice() {
+            const tokenAddress = document.getElementById('tokenSelect').value;
+            const amount = parseInt(document.getElementById('mintAmount').value) || 0;
+            const totalPriceElement = document.getElementById('totalPrice');
+            if (tokenAddress && amount > 0) {
+                const totalPrice = BigInt(tokenInfo[tokenAddress].price) * BigInt(amount);
+                totalPriceElement.innerText = `Total Price: ${totalPrice} ${tokenInfo[tokenAddress].name}`;
+            } else {
+                totalPriceElement.innerText = 'Total Price: Select token and amount';
+            }
+        }
+
+        async function waitForTransaction(txHash) {
+            let receipt = null;
+            const maxAttempts = 30;
+            let attempts = 0;
+            while (attempts < maxAttempts) {
+                receipt = await web3.eth.getTransactionReceipt(txHash);
+                if (receipt) {
+                    if (receipt.status) {
+                        return receipt;
+                    } else {
+                        throw new Error(`Transaction ${txHash} failed`);
+                    }
+                }
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                attempts++;
+            }
+            throw new Error(`Transaction ${txHash} not confirmed after ${maxAttempts} attempts`);
+        }
+
+        async function approveToken() {
+            const status = document.getElementById('networkStatus');
+            const dogMessage = document.getElementById('dogMessage');
+            const approveButton = document.getElementById('approveButton');
+            const tokenAddress = document.getElementById('tokenSelect').value;
+            const amount = parseInt(document.getElementById('mintAmount').value) || 0;
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            if (amount <= 0) {
+                status.innerText = "Invalid mint amount.";
+                dogMessage.innerText = getRandomMessage('invalidAmount');
+                return;
+            }
+
+            try {
+                approveButton.disabled = true;
+                approveButton.innerText = "Approving...";
+                dogMessage.innerText = getRandomMessage('approveStart');
+
+                const tokenContract = new web3.eth.Contract(tokenAbi, tokenAddress);
+                const price = await nftContract.methods[`${tokenInfo[tokenAddress].name}_PRICE`]().call();
+                const totalPrice = (BigInt(price) * BigInt(amount)).toString();
+
+                const tx = await tokenContract.methods.approve(contractAddress, totalPrice).send({
+                    from: account,
+                    gas: web3.utils.toHex(100000)
+                });
+
+                await waitForTransaction(tx.transactionHash);
+                status.innerText = "Token approved successfully!";
+                dogMessage.innerText = getRandomMessage('approveSuccess');
+            } catch (error) {
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else {
+                    status.innerText = "Approval failed.";
+                    dogMessage.innerText = getRandomMessage('approveFail');
+                    console.error("Approval error:", error.message);
+                }
+            } finally {
+                approveButton.innerText = "Approve Token";
+                approveButton.disabled = false;
+            }
+        }
+
+        async function batchMintNFT() {
+            const status = document.getElementById('networkStatus');
+            const mintButton = document.getElementById('mintButton');
+            const dogMessage = document.getElementById('dogMessage');
+            const tokenAddress = document.getElementById('tokenSelect').value;
+            const amount = parseInt(document.getElementById('mintAmount').value) || 0;
+
+            if (!web3 || !account) {
+                status.innerText = "Please connect wallet first.";
+                dogMessage.innerText = getRandomMessage('connectFail');
+                return;
+            }
+
+            if (amount <= 0) {
+                status.innerText = "Invalid mint amount.";
+                dogMessage.innerText = getRandomMessage('invalidAmount');
+                return;
+            }
+
+            try {
+                mintButton.disabled = true;
+                mintButton.innerText = "Minting...";
+                dogMessage.innerText = getRandomMessage('mintStart');
+
+                const tokenContract = new web3.eth.Contract(tokenAbi, tokenAddress);
+                const price = await nftContract.methods[`${tokenInfo[tokenAddress].name}_PRICE`]().call();
+                const totalSupply = await nftContract.methods.totalSupply().call();
+                const maxSupply = await nftContract.methods.MAX_SUPPLY().call();
+
+                if (parseInt(totalSupply) + amount > maxSupply) {
+                    status.innerText = "Max supply reached.";
+                    dogMessage.innerText = getRandomMessage('maxSupplyReached');
+                    mintButton.innerText = "Batch Mint NFTs";
+                    mintButton.disabled = true;
+                    return;
+                }
+
+                const balance = await tokenContract.methods.balanceOf(account).call();
+                const totalPrice = (BigInt(price) * BigInt(amount)).toString();
+                if (web3.utils.toBN(balance).lt(web3.utils.toBN(totalPrice))) {
+                    status.innerText = `Insufficient ${tokenInfo[tokenAddress].name} balance.`;
+                    dogMessage.innerText = getRandomMessage('insufficientBalance');
+                    mintButton.innerText = "Batch Mint NFTs";
+                    mintButton.disabled = false;
+                    return;
+                }
+
+                const allowance = await tokenContract.methods.allowance(account, contractAddress).call();
+                if (web3.utils.toBN(allowance).lt(web3.utils.toBN(totalPrice))) {
+                    status.innerText = `Please approve ${tokenInfo[tokenAddress].name} first.`;
+                    dogMessage.innerText = getRandomMessage('insufficientAllowance');
+                    mintButton.innerText = "Batch Mint NFTs";
+                    mintButton.disabled = false;
+                    return;
+                }
+
+                const tx = await nftContract.methods.batchMintNFT(tokenAddress, amount).send({
+                    from: account,
+                    gas: web3.utils.toHex(200000 + amount * 100000)
+                });
+
+                await waitForTransaction(tx.transactionHash);
+                status.innerText = `Successfully minted ${amount} NFTs!`;
+                dogMessage.innerText = getRandomMessage('mintSuccess');
+                await updateNFTInfo();
+                updateTotalPrice();
+            } catch (error) {
+                if (error.code === 4001) {
+                    status.innerText = "Transaction canceled by user.";
+                    dogMessage.innerText = getRandomMessage('userDenied');
+                } else {
+                    status.innerText = "Batch minting failed.";
+                    dogMessage.innerText = getRandomMessage('mintFail');
+                    console.error("Batch minting error:", error.message);
+                }
+            } finally {
+                mintButton.innerText = "Batch Mint NFTs";
+                mintButton.disabled = false;
+            }
+        }
+
+        document.getElementById('connectWalletButton').addEventListener('click', initializeWeb3);
+        document.getElementById('tokenSelect').addEventListener('change', updateTotalPrice);
+        document.getElementById('mintAmount').addEventListener('input', updateTotalPrice);
+    </script>
+</body>
+</html>
