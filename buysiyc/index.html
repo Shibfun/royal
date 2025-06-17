@@ -198,389 +198,48 @@
     <script>
         const contractAddress = '0x09E11d984eA2ae1AA262EB8eFe7f85AdF8B882d0';
         const contractAbi = [
-            {
-                "inputs": [],
-                "stateMutability": "nonpayable",
-                "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {"indexed": true, "internalType": "address", "name": "owner", "type": "address"},
-                    {"indexed": true, "internalType": "address", "name": "approved", "type": "address"},
-                    {"indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "Approval",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {"indexed": true, "internalType": "address", "name": "owner", "type": "address"},
-                    {"indexed": true, "internalType": "address", "name": "operator", "type": "address"},
-                    {"indexed": false, "internalType": "bool", "name": "approved", "type": "bool"}
-                ],
-                "name": "ApprovalForAll",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {"indexed": true, "internalType": "address", "name": "previousOwner", "type": "address"},
-                    {"indexed": true, "internalType": "address", "name": "newOwner", "type": "address"}
-                ],
-                "name": "OwnershipTransferred",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {"indexed": true, "internalType": "address", "name": "from", "type": "address"},
-                    {"indexed": true, "internalType": "address", "name": "to", "type": "address"},
-                    {"indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "Transfer",
-                "type": "event"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "to", "type": "address"},
-                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "approve",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "owner", "type": "address"}
-                ],
-                "name": "balanceOf",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "tokenAddress", "type": "address"},
-                    {"internalType": "uint256", "name": "amount", "type": "uint256"}
-                ],
-                "name": "batchMintNFT",
-                "outputs": [
-                    {"internalType": "uint256[]", "name": "", "type": "uint256[]"}
-                ],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "getApproved",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "owner", "type": "address"},
-                    {"internalType": "address", "name": "operator", "type": "address"}
-                ],
-                "name": "isApprovedForAll",
-                "outputs": [
-                    {"internalType": "bool", "name": "", "type": "bool"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "name",
-                "outputs": [
-                    {"internalType": "string", "name": "", "type": "string"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "owner",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "ownerOf",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "renounceOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "from", "type": "address"},
-                    {"internalType": "address", "name": "to", "type": "address"},
-                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "safeTransferFrom",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "from", "type": "address"},
-                    {"internalType": "address", "name": "to", "type": "address"},
-                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"},
-                    {"internalType": "bytes", "name": "data", "type": "bytes"}
-                ],
-                "name": "safeTransferFrom",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "string", "name": "_newBaseURI", "type": "string"}
-                ],
-                "name": "setBaseURI",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "operator", "type": "address"},
-                    {"internalType": "bool", "name": "approved", "type": "bool"}
-                ],
-                "name": "setApprovalForAll",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "bytes4", "name": "interfaceId", "type": "bytes4"}
-                ],
-                "name": "supportsInterface",
-                "outputs": [
-                    {"internalType": "bool", "name": "", "type": "bool"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "symbol",
-                "outputs": [
-                    {"internalType": "string", "name": "", "type": "string"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "tokenURI",
-                "outputs": [
-                    {"internalType": "string", "name": "", "type": "string"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "totalSupply",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "from", "type": "address"},
-                    {"internalType": "address", "name": "to", "type": "address"},
-                    {"internalType": "uint256", "name": "tokenId", "type": "uint256"}
-                ],
-                "name": "transferFrom",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "newOwner", "type": "address"}
-                ],
-                "name": "transferOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {"internalType": "address", "name": "tokenAddress", "type": "address"}
-                ],
-                "name": "withdrawERC20",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "CHIKA_PRICE",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "CHIKA_TOKEN",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "DAMN_PRICE",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "DAMN_TOKEN",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "FEED_PRICE",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "FEED_TOKEN",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "MAX_SUPPLY",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "WOW_PRICE",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "WOW_TOKEN",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "WOOF_PRICE",
-                "outputs": [
-                    {"internalType": "uint256", "name": "", "type": "uint256"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "WOOF_TOKEN",
-                "outputs": [
-                    {"internalType": "address", "name": "", "type": "address"}
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            }
+            {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"approved","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"operator","type":"address"},{"indexed":false,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":true,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},
+            {"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"tokenAddress","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"batchMintNFT","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"string","name":"_newBaseURI","type":"string"}],"name":"setBaseURI","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"operator","type":"address"},{"internalType":"bool","name":"approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"bytes4","name":"interfaceId","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[{"internalType":"address","name":"tokenAddress","type":"address"}],"name":"withdrawERC20","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"inputs":[],"name":"CHIKA_PRICE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"CHIKA_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"DAMN_PRICE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"DAMN_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"FEED_PRICE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"FEED_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"MAX_SUPPLY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"WOW_PRICE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"WOW_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"WOOF_PRICE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"WOOF_TOKEN","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"}
         ];
-
         const tokenAbi = [
-            {
-                "constant": false,
-                "inputs": [
-                    {"name": "spender", "type": "address"},
-                    {"name": "value", "type": "uint256"}
-                ],
-                "name": "approve",
-                "outputs": [{"name": "", "type": "bool"}],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {"name": "account", "type": "address"}
-                ],
-                "name": "balanceOf",
-                "outputs": [{"name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {"name": "owner", "type": "address"},
-                    {"name": "spender", "type": "address"}
-                ],
-                "name": "allowance",
-                "outputs": [{"name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            }
+            {"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},
+            {"constant":true,"inputs":[{"name":"account","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"constant":true,"inputs":[{"name":"owner","type":"address"},{"name":"spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
         ];
-
         const chains = {
             Shibarium: {
                 chainId: 109,
@@ -588,7 +247,6 @@
                 rpcUrl: 'https://rpc.shibariumchain.com'
             }
         };
-
         const tokenInfo = {
             "0xD0daa7B6ff1B40d3cc6F0B2Cf7E85cB993D1c834": { name: "WOOF", price: "2597" },
             "0xeCe898EdCc0AF91430603175F945D8de75291c70": { name: "DAMN", price: "542722" },
@@ -596,11 +254,9 @@
             "0x8f4b11d923BbAA6206f3Dd3ff84e8e31bafB49b7": { name: "WOW", price: "6157175" },
             "0x61CFA29261d8151D39244b8FfCf8DFd2f9DF3839": { name: "CHIKA", price: "78868585456" }
         };
-
         let web3, account, nftContract;
         const fromChain = 'Shibarium';
         const MAX_APPROVAL = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-
         const dogMessages = {
             connectSuccess: ["Woof! Wallet connected, ready to batch mint NFTs, pup!", "Arf! You're in, let's mint some NFTs!", "Bark! Wallet's ready, time to mint!"],
             connectFail: ["Woof! Couldn't connect wallet, try again, pup!", "Arf! Wallet connection failed, give it another go!", "Bark! Something went wrong, check your wallet!"],
@@ -616,48 +272,41 @@
             maxSupplyReached: ["Woof! All NFTs minted, collection complete, pup!", "Arf! Max supply reached, no more NFTs!", "Bark! Collection sold out!"],
             invalidAmount: ["Woof! Invalid mint amount, enter a number greater than 0, pup!", "Arf! Check your mint amount!", "Bark! Amount must be valid!"]
         };
-
         function getRandomMessage(type) {
             const messages = dogMessages[type];
             return messages[Math.floor(Math.random() * messages.length)];
         }
-
         async function initializeWeb3() {
+            document.getElementById('mintButton').disabled = true;
             const status = document.getElementById('networkStatus');
             const dogMessage = document.getElementById('dogMessage');
-
             if (!window.ethereum) {
                 status.innerText = 'Please install MetaMask';
                 dogMessage.innerText = 'Woof! MetaMask not found, pup!';
                 return;
             }
-
             try {
                 web3 = new Web3(window.ethereum);
                 const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 account = accounts[0];
                 document.getElementById('connectWalletButton').innerText = `Connected: ${account.slice(0, 6)}...${account.slice(-4)}`;
-
                 await switchNetwork(fromChain);
                 await initializeContract();
                 await updateNFTInfo();
                 await updateTokenBalances();
                 updateTotalPrice();
-
                 status.innerText = `Connected to ${fromChain}`;
                 dogMessage.innerText = getRandomMessage('connectSuccess');
             } catch (error) {
                 status.innerText = 'Failed to connect wallet';
                 dogMessage.innerText = getRandomMessage('connectFail');
-                console.error("Wallet connection error:", error.message);
+                console.error(error.message);
             }
         }
-
         async function switchNetwork(chain) {
             const chainConfig = chains[chain];
             const status = document.getElementById('networkStatus');
             const dogMessage = document.getElementById('dogMessage');
-
             try {
                 await window.ethereum.request({
                     method: 'wallet_switchEthereumChain',
@@ -679,24 +328,22 @@
                     } catch (addError) {
                         status.innerText = 'Failed to add Shibarium network';
                         dogMessage.innerText = getRandomMessage('networkFail');
-                        console.error("Network add error:", addError.message);
+                        console.error(addError.message);
                         throw addError;
                     }
                 } else {
                     status.innerText = 'Failed to switch to Shibarium';
                     dogMessage.innerText = getRandomMessage('networkFail');
-                    console.error("Network switch error:", switchError.message);
+                    console.error(switchError.message);
                     throw switchError;
                 }
             }
         }
-
         async function initializeContract() {
             nftContract = new web3.eth.Contract(contractAbi, contractAddress);
             document.getElementById('nftInfo').style.display = 'block';
             document.getElementById('tokenBalances').style.display = 'block';
         }
-
         async function updateNFTInfo() {
             try {
                 const [name, symbol, owner, totalSupply, maxSupply] = await Promise.all([
@@ -713,10 +360,9 @@
             } catch (error) {
                 document.getElementById('nftInfo').style.display = 'none';
                 document.getElementById('dogMessage').innerText = 'Woof! Error loading contract info, pup!';
-                console.error("NFT info error:", error.message);
+                console.error(error.message);
             }
         }
-
         async function updateTokenBalances() {
             if (!web3 || !account) return;
             try {
@@ -735,10 +381,9 @@
             } catch (error) {
                 document.getElementById('tokenBalances').style.display = 'none';
                 document.getElementById('dogMessage').innerText = 'Woof! Error loading token balances, pup!';
-                console.error("Token balances error:", error.message);
+                console.error(error.message);
             }
         }
-
         function updateTotalPrice() {
             const tokenAddress = document.getElementById('tokenSelect').value;
             const amount = parseInt(document.getElementById('mintAmount').value) || 0;
@@ -750,7 +395,6 @@
                 totalPriceElement.innerText = 'Total Price: Select token and amount';
             }
         }
-
         async function waitForTransaction(txHash) {
             let receipt = null;
             const maxAttempts = 30;
@@ -769,37 +413,31 @@
             }
             throw new Error(`Transaction ${txHash} not confirmed after ${maxAttempts} attempts`);
         }
-
         async function batchMintNFT() {
             const status = document.getElementById('networkStatus');
             const mintButton = document.getElementById('mintButton');
             const dogMessage = document.getElementById('dogMessage');
             const tokenAddress = document.getElementById('tokenSelect').value;
             const amount = parseInt(document.getElementById('mintAmount').value) || 0;
-
             if (!web3 || !account) {
                 status.innerText = "Please connect wallet first.";
                 dogMessage.innerText = getRandomMessage('connectFail');
                 return;
             }
-
             if (amount <= 0) {
                 status.innerText = "Invalid mint amount.";
                 dogMessage.innerText = getRandomMessage('invalidAmount');
                 return;
             }
-
             try {
                 mintButton.disabled = true;
                 mintButton.innerText = "Processing...";
                 dogMessage.innerText = getRandomMessage('approveStart');
-
                 const tokenContract = new web3.eth.Contract(tokenAbi, tokenAddress);
                 const price = await nftContract.methods[`${tokenInfo[tokenAddress].name}_PRICE`]().call();
                 const totalSupply = await nftContract.methods.totalSupply().call();
                 const maxSupply = await nftContract.methods.MAX_SUPPLY().call();
                 const totalPrice = (BigInt(price) * BigInt(amount)).toString();
-
                 if (parseInt(totalSupply) + amount > maxSupply) {
                     status.innerText = "Max supply reached.";
                     dogMessage.innerText = getRandomMessage('maxSupplyReached');
@@ -807,7 +445,6 @@
                     mintButton.disabled = true;
                     return;
                 }
-
                 const balance = await tokenContract.methods.balanceOf(account).call();
                 if (web3.utils.toBN(balance).lt(web3.utils.toBN(totalPrice))) {
                     status.innerText = `Insufficient ${tokenInfo[tokenAddress].name} balance.`;
@@ -816,7 +453,6 @@
                     mintButton.disabled = false;
                     return;
                 }
-
                 const allowance = await tokenContract.methods.allowance(account, contractAddress).call();
                 if (web3.utils.toBN(allowance).lt(web3.utils.toBN(totalPrice))) {
                     const approveTx = await tokenContract.methods.approve(contractAddress, MAX_APPROVAL).send({
@@ -827,15 +463,12 @@
                     status.innerText = "Token approved successfully!";
                     dogMessage.innerText = getRandomMessage('approveSuccess');
                 }
-
                 mintButton.innerText = "Minting...";
                 dogMessage.innerText = getRandomMessage('mintStart');
-
                 const mintTx = await nftContract.methods.batchMintNFT(tokenAddress, amount).send({
                     from: account,
                     gas: web3.utils.toHex(200000 + amount * 100000)
                 });
-
                 await waitForTransaction(mintTx.transactionHash);
                 status.innerText = `Successfully minted ${amount} NFTs!`;
                 dogMessage.innerText = getRandomMessage('mintSuccess');
@@ -849,14 +482,13 @@
                 } else {
                     status.innerText = "Batch minting failed.";
                     dogMessage.innerText = getRandomMessage('mintFail');
-                    console.error("Batch minting error:", error.message);
+                    console.error(error.message);
                 }
             } finally {
                 mintButton.innerText = "Batch Mint NFTs";
-                mintButton.disabled = false;
+                mintButton.disabled = true;
             }
         }
-
         document.getElementById('connectWalletButton').addEventListener('click', initializeWeb3);
         document.getElementById('tokenSelect').addEventListener('change', updateTotalPrice);
         document.getElementById('mintAmount').addEventListener('input', updateTotalPrice);
